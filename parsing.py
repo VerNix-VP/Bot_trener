@@ -24,3 +24,9 @@ def parse_name(text):
     if name == "":
         raise ValueError("Укажи упражнение, например: /max жим")
     return name
+
+
+def fmt_weight(w):
+    if w == int(w):
+        return str(int(w))
+    return str(w)

@@ -3,7 +3,7 @@ import os
 import telebot
 
 from calculations import best_max, make_plan, one_rep_max
-from parsing import parse_add, parse_name
+from parsing import fmt_weight, parse_add, parse_name
 from storage import add_entry, get_entries, load_data, save_data
 
 HELP = """Я веду дневник силовых тренировок.
@@ -46,7 +46,7 @@ def cmd_add(message):
         return
 
     rm = one_rep_max(w, r)
-    ans = f"Записал: {name} {w} кг × {r}\nРасчётный максимум: {round(rm, 1)} кг"
+    ans = f"Записал: {name} {fmt_weight(w)} кг × {r}\nРасчётный максимум: {round(rm, 1)} кг"
     if rm > old:
         ans += "\nНовый рекорд!"
     bot.reply_to(message, ans)
@@ -81,7 +81,7 @@ def cmd_history(message):
         return
     ans = f"Последние записи — {name}:"
     for e in entries[-10:]:
-        ans += f"\n{e['weight']} кг × {e['reps']}"
+        ans += f"\n{fmt_weight(e['weight'])} кг × {e['reps']}"
     bot.reply_to(message, ans)
 
 
@@ -100,7 +100,7 @@ def cmd_plan(message):
     rm = best_max(entries)
     ans = f"План для «{name}» (максимум {round(rm, 1)} кг):"
     for w, r in make_plan(rm):
-        ans += f"\n{w} кг × {r}"
+        ans += f"\n{fmt_weight(w)} кг × {r}"
     bot.reply_to(message, ans)
 
 

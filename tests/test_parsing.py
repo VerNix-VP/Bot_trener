@@ -1,6 +1,6 @@
 import pytest
 
-from parsing import parse_add, parse_name
+from parsing import fmt_weight, parse_add, parse_name
 
 
 def test_parse_add():
@@ -36,3 +36,8 @@ def test_parse_name():
     assert parse_name("жим   лёжа") == "жим лёжа"
     with pytest.raises(ValueError):
         parse_name("   ")
+
+
+def test_fmt_weight():
+    assert fmt_weight(100.0) == "100"
+    assert fmt_weight(102.5) == "102.5"
