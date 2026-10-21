@@ -4,7 +4,7 @@ import telebot
 
 from calculations import best_max, make_plan, one_rep_max
 from parsing import fmt_weight, parse_add, parse_name
-from storage import add_entry, delete_last, get_entries, load_data, save_data
+from storage import add_entry, delete_last, get_entries, get_exercises, load_data, save_data
 
 HELP = """Я веду дневник силовых тренировок.
 
@@ -13,6 +13,7 @@ HELP = """Я веду дневник силовых тренировок.
 /history жим — последние записи
 /plan жим — рабочие веса от максимума
 /undo — удалить последнюю запись
+/list — список твоих упражнений
 /help — список команд"""
 
 token = os.environ.get("BOT_TOKEN")
@@ -115,6 +116,19 @@ def cmd_undo(message):
         bot.reply_to(message, str(err))
         return
     bot.reply_to(message, f"Удалил: {e['exercise']} {fmt_weight(e['weight'])} кг × {e['reps']}")
+
+
+@bot.message_handler(commands=["list"])
+def cmd_list(message):
+    try:
+        names = get_exercises(load_data(), message.from_user.id)
+    except ValueError as e:
+        bot.reply_to(message, str(e))
+        return
+    if len(names) == 0:
+        bot.reply_to(message, "Записей пока нет. Начни с /add жим 100 5")
+        return
+    bot.reply_to(message, "Твои упражнения:\n" + "\n".join(names))
 
 
 @bot.message_handler(content_types=["text"])
