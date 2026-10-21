@@ -1,6 +1,6 @@
 import pytest
 
-from storage import add_entry, get_entries, load_data, save_data
+from storage import add_entry, delete_last, get_entries, load_data, save_data
 
 
 def test_save_and_load(tmp_path):
@@ -30,3 +30,18 @@ def test_get_entries():
     add_entry(data, 2, "жим", 80, 5)
     assert get_entries(data, 1, "жим") == [{"exercise": "жим", "weight": 100, "reps": 5}]
     assert get_entries(data, 3, "жим") == []
+
+
+def test_delete_last():
+    data = {}
+    add_entry(data, 1, "жим", 100, 5)
+    add_entry(data, 1, "присед", 140, 3)
+    assert delete_last(data, 1) == {"exercise": "присед", "weight": 140, "reps": 3}
+    assert len(data["1"]) == 1
+
+
+def test_delete_last_empty():
+    with pytest.raises(ValueError):
+        delete_last({}, 1)
+    with pytest.raises(ValueError):
+        delete_last({"1": []}, 1)

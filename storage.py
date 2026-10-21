@@ -38,3 +38,10 @@ def get_entries(data, user_id, name):
         if e["exercise"] == name:
             res.append(e)
     return res
+
+
+def delete_last(data, user_id):
+    uid = str(user_id)
+    if uid not in data or len(data[uid]) == 0:
+        raise ValueError("Удалять нечего: записей пока нет")
+    return data[uid].pop()
